@@ -7,11 +7,13 @@
 ##
 #Notes: 'eleven columns clearfix' for main body div
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup 
 from datetime import date, datetime
 
 URL_DAILY = "https://www.rit.edu/news/nandedaily.php"
 PAGE_DAILY = "page_daily.txt"
+PARSER = "html5lib"
+
 
 def update():
     real_today = date.today().strftime("%B %d, %Y")
@@ -41,7 +43,7 @@ def getPage(url):
             return text.join()
 
 def getDiv(content, header):
-    soup = BeautifulSoup(content, "lxml")
+    soup = BeautifulSoup(content, PARSER)
     right_col = soup.find_all('div', {'class':'four columns omega right_side'})[0]
     head = 0
     for tagnum in range(len(right_col.contents)):
