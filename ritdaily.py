@@ -16,8 +16,9 @@ PAGE_DAILY = "page_daily.txt"
 def update():
     real_today = date.today().strftime("%B %d, %Y")
     page_today = ""
-    with open(PAGE_DAILY, "w+") as f:
+    with open(PAGE_DAILY, "r") as f:
         page_today = f.readline().strip()
+    
     return False if real_today == page_today else True        
 
 def getPage(url):
@@ -137,7 +138,19 @@ def alexaGet():
 
     return (events, sports)
 
+def printEvents():
+    return alexaGet()[0]
+
+def printSports():
+    return alexaGet()[1]
+
 if __name__ == "__main__":
     daily = alexaGet()
-#    print(daily[0])
-#    print(daily[1])
+    HEAD = "-" * 10
+    print(HEAD + " Events " + HEAD)
+    print(daily[0])
+    print(HEAD + " Sports " + HEAD)
+    print(daily[1])
+
+
+
