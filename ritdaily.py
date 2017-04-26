@@ -8,13 +8,36 @@
 #Notes: 'eleven columns clearfix' for main body div
 import requests
 from bs4 import BeautifulSoup
+from datetime import date, datetime
 
 URL_DAILY = "https://www.rit.edu/news/nandedaily.php"
 PAGE_DAILY = "page_daily.txt"
 
+def update():
+    real_today = date.today().strftime("%B %d, %Y")
+    page_today = ""
+    with open(PAGE_DAILY, "w+") as f:
+        page_today = f.readline().strip()
+    return False if real_today == page_today else True        
 
 def getPage(url):
-    return requests.get(url).text
+    with open(PAGE_DAILY, "r+") as f:
+        real_today = getRealDate() 
+        text = f.readlines()
+        try:
+            textdate = text.pop()
+        except IndexError:
+            textdate = ""
+        if(textdate != real_today):
+            print("Getting page...")
+            newtext = requests.get(url).text
+            f.seek(0)
+            f.write(real_today + "\n")
+            f.write(newtext)
+            f.truncate()
+            return newtext
+        else: #same day, return same page
+            return text.join()
 
 def getDiv(content, header):
     soup = BeautifulSoup(content, "lxml")
@@ -27,8 +50,20 @@ def getDiv(content, header):
             break
     return right_col.contents[head]
 
-def getNews():
-    return 0
+def getRealDate():
+    return date.today().strftime("%B %d, %Y")
+
+#Deprecated
+def getDate(content):
+  # # soup = BeautifulSoup(content, "lxml")
+    todaysdate = soup.find_all('div', {'class':'eleven columns alpha'})[0].contents[1].contents[1].string
+    print(todaysdate)
+
+def getWeather(content):
+    return
+
+def getNews(content):
+    return
 
 def getEvents(content):
     events = list()
@@ -36,18 +71,30 @@ def getEvents(content):
     for n in range(len(events_div.contents)):
         tag = events_div.contents[n]
         if(tag.name == "strong"):
+#            hier = str(tag.name) #####
+
             title = tag.string
-            
+             
             #Advance to next tag
             n += 1
-            tag = events_div.contents[n]
-            
-            desc = tag.string
-            events.append(title.upper() + desc)
-    return events
+            tag = events_div.contents[n]           
 
-def splitEvent(event):
-    return
+#            hier += " " + str(tag.name) #####
+
+            desc = tag.string
+
+            desc2 = ""
+            if(desc.name == "em"):
+                n += 1
+                tag = events_div.contents[n]
+
+#                hier += " " + str(tag.name) #####
+
+                desc2 = tag.string
+
+#            print(hier)
+            events.append(title.upper() + desc + desc2)
+    return events
 
 def getSports(content):
     sports = list()
@@ -65,11 +112,32 @@ def getSports(content):
             sports.append(team + score)
     return sports
 
+def alexaGet():
+    if(update()):
+        print("Updating, " + getRealDate())
+        webText = getPage(URL_DAILY)
+
+        events = getEvents(webText)
+        with open("events.txt", "w") as f:
+            for event in events:
+                f.write((event + "\n").encode("utf-8"))
+
+        sports = getSports(webText)
+        with open("sports.txt", "w") as f:
+            for sport in sports:
+                f.write((sport + "\n").encode("utf-8"))
+
+    events = ""
+    with open("events.txt", "r") as f:
+        events = "".join(f.readlines())
+
+    sports = ""
+    with open("sports.txt", "r") as f:
+        sports = "".join(f.readlines())
+
+    return (events, sports)
+
 if __name__ == "__main__":
-    webText = getPage(URL_DAILY)
-    events = getEvents(webText)
-    for event in events:
-        print(event)
-    sports = getSports(webText)
-    for sport in sports:
-        print(sport)
+    daily = alexaGet()
+#    print(daily[0])
+#    print(daily[1])
