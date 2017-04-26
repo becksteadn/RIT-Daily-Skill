@@ -123,12 +123,12 @@ def alexaGet():
         events = getEvents(webText)
         with open("events.txt", "w") as f:
             for event in events:
-                f.write((event + "\n").encode("utf-8"))
+                f.write(str((event + "\n").decode("utf-8")))
 
         sports = getSports(webText)
         with open("sports.txt", "w") as f:
             for sport in sports:
-                f.write((sport + "\n").encode("utf-8"))
+                f.write(str((sport + "\n").decode("utf-8")))
 
     events = ""
     with open("events.txt", "r") as f:
