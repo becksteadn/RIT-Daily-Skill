@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
+from OpenSSL import SSL
 import ritdaily
 
 app = Flask(__name__)
@@ -27,4 +28,9 @@ def getSports():
     return statement(sports).simple_card('Sports', sports)
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=443, debug=True)
+#    context = SSL.Context(SSL.SSLv23_METHOD)
+#    context.use_privatekey_file('privkey.pem')
+#    context.use_certification_file('fullchain.pem')
+#    context.load_cert_chian("ritdaily.crt", "private.key")
+#    app.run(host="0.0.0.0", port=443, debug=True, ssl_context=context)
+     app.run(debug=True)

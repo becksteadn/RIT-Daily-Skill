@@ -13,14 +13,16 @@ from datetime import date, datetime
 URL_DAILY = "https://www.rit.edu/news/nandedaily.php"
 PAGE_DAILY = "page_daily.txt"
 PARSER = "html5lib"
-
+HEADERS = {
+	"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"
+}
 
 def update():
     real_today = date.today().strftime("%B %d, %Y")
     page_today = ""
     with open(PAGE_DAILY, "r") as f:
         page_today = f.readline().strip()
-    
+    print("Today is " + str(real_today) + ". Page day is " + str(page_today) + ".") 
     return False if real_today == page_today else True        
 
 def getPage(url):
@@ -33,13 +35,14 @@ def getPage(url):
             textdate = ""
         if(textdate != real_today):
             print("Getting page...")
-            newtext = requests.get(url).text
+            newtext = requests.get(url, headers=HEADERS).text.encode('ascii', 'ignore')
             f.seek(0)
             f.write(real_today + "\n")
             f.write(newtext)
             f.truncate()
             return newtext
         else: #same day, return same page
+	    print("No need to update.")
             return text.join()
 
 def getDiv(content, header):
@@ -58,7 +61,7 @@ def getRealDate():
 
 #Deprecated
 def getDate(content):
-  # # soup = BeautifulSoup(content, "lxml")
+    soup = BeautifulSoup(content, "lxml")
     todaysdate = soup.find_all('div', {'class':'eleven columns alpha'})[0].contents[1].contents[1].string
     print(todaysdate)
 
@@ -96,7 +99,7 @@ def getEvents(content):
                 desc2 = tag.string
 
 #            print(hier)
-            events.append(title.upper() + desc + desc2)
+            events.append(title.upper() + desc + desc2 + "...")
     return events
 
 def getSports(content):
@@ -123,12 +126,12 @@ def alexaGet():
         events = getEvents(webText)
         with open("events.txt", "w") as f:
             for event in events:
-                f.write(event + "\n")
+                f.write(event.encode('ascii', 'ignore') + "\n")
 
         sports = getSports(webText)
         with open("sports.txt", "w") as f:
             for sport in sports:
-                f.write(sport + "\n")
+                f.write(sport.encode('ascii', 'ignore') + "\n")
 
     events = ""
     with open("events.txt", "r") as f:
@@ -147,7 +150,12 @@ def printSports():
     return alexaGet()[1]
 
 if __name__ == "__main__":
+
     daily = alexaGet()
+
+    #with open(PAGE_DAILY) as f:
+    #getDate(f.readlines().join())
+
     HEAD = "-" * 10
     print(HEAD + " Events " + HEAD)
     print(daily[0])
