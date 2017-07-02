@@ -99,7 +99,7 @@ def getEvents(content):
                 desc2 = tag.string
 
 #            print(hier)
-            events.append(title.upper() + desc + desc2 + "...")
+            events.append(title.upper() + desc + desc2 + '<break time="1s"/>') #Between events edited here
     return events
 
 def getSports(content):
@@ -115,7 +115,7 @@ def getSports(content):
 
             score = tag.string
             
-            sports.append(team + score)
+            sports.append(team + score + '<break time="1s"/>') #Between sports edited here
     return sports
 
 def alexaGet():
