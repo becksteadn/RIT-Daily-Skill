@@ -125,13 +125,21 @@ def alexaGet():
 
         events = getEvents(webText)
         with open("events.txt", "w") as f:
-            for event in events:
-                f.write(event.encode('ascii', 'ignore') + "\n")
+	    if(len(events) < 1):
+		f.write("Sorry, there are no events for today.\n")
+	    else:
+		f.write('Here are some upcoming events.<break time="1s"/>\n')
+                for event in events:
+                    f.write(event.encode('ascii', 'ignore') + "\n")
 
         sports = getSports(webText)
         with open("sports.txt", "w") as f:
-            for sport in sports:
-                f.write(sport.encode('ascii', 'ignore') + "\n")
+            if(len(sports) < 1):
+		f.write("Sorry, there are no sports updates for today.\n")
+	    else:
+		f.write('Here are the most recents sports scores.<break time="1s"/>\n')
+	        for sport in sports:
+                    f.write(sport.encode('ascii', 'ignore') + "\n")
 
     events = ""
     with open("events.txt", "r") as f:
