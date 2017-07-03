@@ -99,7 +99,7 @@ def getEvents(content):
                 desc2 = tag.string
 
 #            print(hier)
-            events.append(title.upper() + desc + desc2 + '<break time="1s"/>') #Between events edited here
+            events.append(title.upper() + desc + desc2 + "<break time='1s'/>") #Between events edited here
     return events
 
 def getSports(content):
@@ -115,7 +115,7 @@ def getSports(content):
 
             score = tag.string
             
-            sports.append(team + score + '<break time="1s"/>') #Between sports edited here
+            sports.append(team + score + "<break time='1s'/>") #Between sports edited here
     return sports
 
 def alexaGet():
@@ -128,18 +128,20 @@ def alexaGet():
 	    if(len(events) < 1):
 		f.write("Sorry, there are no events for today.\n")
 	    else:
-		f.write('Here are some upcoming events.<break time="1s"/>\n')
+		f.write("<speak>\nHere are some upcoming events.<break time='1s'/>\n")
                 for event in events:
                     f.write(event.encode('ascii', 'ignore') + "\n")
+		f.write("</speak>\n")
 
         sports = getSports(webText)
         with open("sports.txt", "w") as f:
             if(len(sports) < 1):
 		f.write("Sorry, there are no sports updates for today.\n")
 	    else:
-		f.write('Here are the most recents sports scores.<break time="1s"/>\n')
+		f.write("<speak>\nHere are the most recents sports scores.<break time='1s'/>\n")
 	        for sport in sports:
                     f.write(sport.encode('ascii', 'ignore') + "\n")
+		f.write("</speak>\n")
 
     events = ""
     with open("events.txt", "r") as f:

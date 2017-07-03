@@ -8,20 +8,21 @@ ask = Ask(app, "/")
 
 DAILY = "  "
 help = 'For events, ask, "Alexa, ask R.I.T. Daily to get events". For sports, ask, "Alexa, ask R.I.T. Daily to get sports scores".'
+qlaunch = 'Would you like to know upcoming events or sports scores?'
 
 @ask.launch
 def launch():
     #DAILY = ritdaily.alexaGet()
     #briefing = render_template('briefing')
-    #open_statement = 'For events, ask "Alexa, ask R.I.T. Daily to get events". For sports, ask "Alexa, ask R.I.T. Daily to get sports scores".'
-    #open_statement = "Ask me for events or sports scores"
+    #briefing = DAILY[0] + DAILY[1]
     return statement(help).simple_card('Open', help)
+    #return question(qlaunch)
 
-@ask.intent("HelpIntent")
-def getHelp():
+#@ask.intent("HelpIntent")
+#def getHelp():
     #help = "ask me for events or sports scores"
-    #help = 'For events, ask "Alexa, ask R.I.T. Daily to get events". For sports, ask "Alexa, ask R.I.T. Daily to get sports scores".'
-    return statement(help).simple_card('Help', help)
+    #help = 'For events, ask ,"Alexa, ask R.I.T. Daily to get events". For sports, ask ,"Alexa, ask R.I.T. Daily to get sports scores".'
+#    return statement(help).simple_card('Help', help)
 
 @ask.intent("EventsIntent")
 def getEvents():
@@ -41,6 +42,4 @@ if __name__ == '__main__':
 #    context.use_certification_file('fullchain.pem')
 #    context.load_cert_chian("ritdaily.crt", "private.key")
 #    app.run(host="0.0.0.0", port=443, debug=True, ssl_context=context)
-     try:
-         app.run(debug=True)
-     
+     app.run(debug=True) 
