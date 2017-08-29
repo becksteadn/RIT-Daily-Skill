@@ -1,4 +1,4 @@
-##
+# -*- coding: utf-8 -*-
 #Python script to parse data from the RIT Daily News and Events Webpage
 #
 #Author: Nathaniel Beckstead becksteadn@gmail.com
@@ -9,6 +9,10 @@
 import requests
 from bs4 import BeautifulSoup 
 from datetime import date, datetime
+import sys  
+
+reload(sys)  
+sys.setdefaultencoding('utf8')
 
 URL_DAILY = "https://www.rit.edu/news/nandedaily.php"
 PAGE_DAILY = "page_daily.txt"
@@ -130,7 +134,7 @@ def alexaGet():
 	    else:
 		f.write("<speak>\nHere are some upcoming events.<break time='1s'/>\n")
                 for event in events:
-                    f.write(event.encode('ascii', 'ignore') + "\n")
+                    f.write(event.replace(".", " ").replace("–", " to ").replace(" & ", " and ").replace(")","").encode('ascii', 'ignore') + "\n")
 		f.write("</speak>\n")
 
         sports = getSports(webText)
@@ -138,9 +142,9 @@ def alexaGet():
             if(len(sports) < 1):
 		f.write("Sorry, there are no sports updates for today.\n")
 	    else:
-		f.write("<speak>\nHere are the most recents sports scores.<break time='1s'/>\n")
+		f.write("<speak>\nHere are the most recent sports scores.<break time='1s'/>\n")
 	        for sport in sports:
-                    f.write(sport.encode('ascii', 'ignore') + "\n")
+                    f.write(sport.replace(".", " ").replace("–", " to ").encode('ascii', 'ignore') + "\n")
 		f.write("</speak>\n")
 
     events = ""

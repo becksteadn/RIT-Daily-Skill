@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
 from OpenSSL import SSL
@@ -7,34 +8,33 @@ app = Flask(__name__)
 ask = Ask(app, "/")
 
 DAILY = "  "
-help = 'For events, ask, "Alexa, ask R.I.T. Daily to get events". For sports, ask, "Alexa, ask R.I.T. Daily to get sports scores".'
-qlaunch = 'Would you like to know upcoming events or sports scores?'
+help = 'For events, ask, "Alexa, ask R.I.T. Daily to get events". For sports, ask, "Alexa, ask R.I.T. Daily to get sports scores". What would you like to do?'
+qlaunch = 'Would you like to know upcoming events, or sports scores?'
+qlaunch = 'Welcome to R.I.T. Daily. For events, ask, "get events". For sports, ask, "get sports". What would you like to do?'
 
 @ask.launch
 def launch():
-    #DAILY = ritdaily.alexaGet()
-    #briefing = render_template('briefing')
-    #briefing = DAILY[0] + DAILY[1]
-    return statement(help).simple_card('Open', help)
-    #return question(qlaunch)
-
-#@ask.intent("HelpIntent")
-#def getHelp():
-    #help = "ask me for events or sports scores"
-    #help = 'For events, ask ,"Alexa, ask R.I.T. Daily to get events". For sports, ask ,"Alexa, ask R.I.T. Daily to get sports scores".'
-#    return statement(help).simple_card('Help', help)
+    return question(qlaunch)
 
 @ask.intent("EventsIntent")
 def getEvents():
     DAILY = ritdaily.alexaGet()
     events = DAILY[0]
-    return statement(events).simple_card('Events', events)
+    return statement(events)#.simple_card('Events', events)
 
 @ask.intent("SportsIntent")
 def getSports():
     DAILY = ritdaily.alexaGet()
     sports = DAILY[1]
-    return statement(sports).simple_card('Sports', sports)
+    return statement(sports)#.simple_card('Sports', sports)
+
+@ask.intent("AMAZON.StopIntent")
+def stop():
+    return statement("Goodbye.")
+
+@ask.intent("AMAZON.HelpIntent")
+def getHelp():
+    return question(help)
 
 if __name__ == '__main__':
 #    context = SSL.Context(SSL.SSLv23_METHOD)
